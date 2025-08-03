@@ -1,8 +1,10 @@
+"use client";
+
 export default function Page() {
   return (
     <main className="signup-page">
       <h1>Sign Up</h1>
-      <form action="">
+      <form action="api/signup" method="POST">
         <label htmlFor="CPF">CPF:</label>
         <input type="text" id="CPF" />
         <label htmlFor="Nome">Nome:</label>
@@ -11,6 +13,8 @@ export default function Page() {
         <input type="text" id="Cidade" />
         <label htmlFor="Data de Nacimento">Data de Nacimento:</label>
         <input type="text" id="Data de Nacimento" />
+
+        <button type="submit">Submit</button>
       </form>
     </main>
   );
