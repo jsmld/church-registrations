@@ -7,3 +7,19 @@ services:
       POSTGRES_DB: church_registrations
     ports:
       - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: always
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_container
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user@example.com
+      PGADMIN_DEFAULT_PASSWORD: password
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    restart: always
+volumes:
+  db_data:
