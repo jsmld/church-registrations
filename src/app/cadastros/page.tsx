@@ -1,6 +1,12 @@
 "use client";
+import { useState } from "react";
 
 export default function Page() {
+  const [cpf, setCpf] = useState("");
+  const [nome, setNome] = useState("");
+  const [cidade, setCidade] = useState("");
+  const [dataNascimento, setDataNascimento] = useState("");
+
   return (
     <main className="signup-page">
       <h1>Sign Up</h1>
