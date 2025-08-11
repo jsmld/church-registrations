@@ -3,6 +3,7 @@ CREATE TABLE
     id SERIAL PRIMARY KEY,
     cpf VARCHAR(11) NOT NULL UNIQUE,
     name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     gender VARCHAR(10) NOT NULL,
     marital_status VARCHAR(10) NOT NULL,
