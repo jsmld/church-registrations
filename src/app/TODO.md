@@ -1,4 +1,4 @@
 - Completar a validação do api/signup do formulario de cadastro.
-- Criar a validação do formulário de cadastro no frontend
-- Criar os campos do formulário no frontend
+- Criar a validação do formulário de cadastro no frontend OK
+- Criar os campos do formulário no frontend OK
 - Capturar o nome da pessoa com o api https://www.cpfcnpj.com.br/dev/
