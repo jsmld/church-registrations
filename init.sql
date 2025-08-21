@@ -14,10 +14,10 @@ CREATE TABLE
     state VARCHAR(20) NOT NULL,
     neighborhood VARCHAR(50) NOT NULL,
     street VARCHAR(50) NOT NULL,
-    street_number INT (10) NOT NULL,
+    street_number INT NOT NULL,
     complement VARCHAR(50),
     country VARCHAR(20) DEFAULT 'Brasil',
     children INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   )
