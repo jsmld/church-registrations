@@ -11,6 +11,9 @@ const pool = new Pool({
 const FormSchema = z.object({
   cpf: z.string().length(11, { message: "CPF deve ter 11 caracteres." }),
   name: z.string().min(3, { message: "Nome deve ter no mínimo 3 caracteres." }),
+  last_name: z
+    .string()
+    .min(3, { message: "Sobrenome deve ter no mínimo 3 caracteres." }),
   email: z.email({ message: "Formato de email inválido." }),
   gender: z.string().min(1, { message: "Gênero é obrigatório." }),
   marital_status: z.string().min(1, { message: "Estado civil é obrigatório." }),
@@ -38,15 +41,24 @@ export async function registrationAction(
   );
 
   if (!validatedFields.success) {
+    const treeErro = z.treeifyError(validatedFields.error);
+    const fieldErrors = Object.fromEntries(
+      Object.entries(treeErro.properties ?? {}).map(([key, value]) => [
+        key,
+        value.errors || [],
+      ])
+    );
+
     return {
       message: "Erro de validação. Por favor, verifique os campos.",
-      errors: validatedFields.error.flatten().fieldErrors,
+      errors: fieldErrors,
     };
   }
 
   const {
     cpf,
     name,
+    last_name,
     email,
     gender,
     marital_status,
@@ -61,13 +73,14 @@ export async function registrationAction(
     complement,
   } = validatedFields.data;
 
-  /* try {
+  try {
     await pool.query(
-      `INSERT INTO users (cpf, name, email, gender, marital_status, birth_date, age, phone, city, state, neighborhood, street, street_number, complement)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`,
+      `INSERT INTO participants (cpf, name, last_name, email, gender, marital_status, birth_date, age, phone, city, state, neighborhood, street, street_number, complement)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)`,
       [
         cpf,
         name,
+        last_name,
         email,
         gender,
         marital_status,
@@ -97,5 +110,5 @@ export async function registrationAction(
       message: "Erro no servidor ao tentar realizar o cadastro.",
       errors: {},
     };
-  } */
+  }
 }

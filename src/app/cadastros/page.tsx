@@ -14,22 +14,25 @@ export default function Page() {
     registrationAction,
     initialState
   );
-  console.log(state);
 
   return (
     <main className="registration-page">
       <h1>Novo Cadastro</h1>
-      <form action="">
+      <form action={formAction} className="registration-form">
+        {/* <CPFField /> */}
         <div>
           <label htmlFor="cpf">CPF</label>
-          <input type="text" id="cpf" name="cpf" />
-          {state.errors?.cpf && <p className="error">{state.errors.cpf}</p>}
+          <input type="number" id="cpf" name="cpf" />
+          {state.errors?.cpf && <p className="error">{state.errors?.cpf}</p>}
         </div>
-      </form>
-      <form action={formAction}>
         <div>
           <label htmlFor="name">Nome Completo</label>
           <input type="text" id="name" name="name" />
+          {state.errors?.name && <p className="error">{state.errors.name}</p>}
+        </div>
+        <div>
+          <label htmlFor="name">Sobrenome</label>
+          <input type="text" id="name" name="last_name" />
           {state.errors?.name && <p className="error">{state.errors.name}</p>}
         </div>
         <div>

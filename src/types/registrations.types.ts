@@ -17,3 +17,8 @@ export type RegistrationsState = {
     complement?: string[];
   };
 };
+
+export type cpfValidationState = {
+  message: string;
+  errors?: { cpf?: string };
+};
