@@ -8,7 +8,6 @@ CREATE TABLE
     gender VARCHAR(10) NOT NULL,
     marital_status VARCHAR(10) NOT NULL,
     birth_date DATE NOT NULL,
-    age INT NOT NULL,
     phone VARCHAR(15) NOT NULL,
     city VARCHAR(30) NOT NULL,
     state VARCHAR(20) NOT NULL,

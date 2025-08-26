@@ -1,9 +1,9 @@
 "use client";
 
 import { useActionState, useState } from "react";
-import { cpfValidateAction } from "./cpfValidatorAction";
+import { cpfValidateAction } from "../action/cpfValidatorAction";
 import { cpfValidationState } from "@/types/registrations.types";
-import { set, z } from "zod";
+import { z } from "zod";
 
 const cpfSchema = z
   .string()

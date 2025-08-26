@@ -1,21 +1,13 @@
-export type RegistrationsState = {
+import { FormSchemaType } from "@/schema/registration-schema";
+
+export type FieldsValueState = FormSchemaType;
+
+export type FieldsName = keyof FieldsValueState;
+
+export type RegistrationsFormState = {
   message: string;
-  errors?: {
-    cpf?: string[];
-    name?: string[];
-    email?: string[];
-    gender?: string[];
-    marital_status?: string[];
-    birth_date?: string[];
-    age?: string[];
-    phone?: string[];
-    city?: string[];
-    state?: string[];
-    neighborhood?: string[];
-    street?: string[];
-    street_number?: string[];
-    complement?: string[];
-  };
+  errors?: Partial<FormSchemaType>;
+  values?: FormSchemaType;
 };
 
 export type cpfValidationState = {
