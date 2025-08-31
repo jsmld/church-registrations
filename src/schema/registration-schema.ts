@@ -8,8 +8,18 @@ const fieldErrors = {
     `${field} deve ter no máximo ${max} caracteres.`,
 };
 
+export const cepFormSchema = z
+  .string()
+  .length(8, { message: "CEP deve ter 8 caracteres." })
+  .regex(/^\d+$/, {
+    message: "CEP deve conter apenas números.",
+  });
+
 export const FormSchema = z.object({
-  cpf: z.string().length(11, { message: "CPF deve ter 11 caracteres." }),
+  cpf: z
+    .string()
+    .length(11, { message: "CPF deve ter 11 caracteres." })
+    .regex(/^\d+$/, { message: "CPF deve conter apenas números." }),
 
   name: z.string().min(3, fieldErrors.min("Nome", 3)),
 
@@ -27,6 +37,8 @@ export const FormSchema = z.object({
     .string()
     .min(10, fieldErrors.min("Telefone", 10))
     .max(15, fieldErrors.max("Telefone", 15)),
+
+  cep: cepFormSchema,
 
   city: z.string().min(1, fieldErrors.required("Cidade")),
 
