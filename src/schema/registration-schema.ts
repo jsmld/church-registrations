@@ -1,5 +1,15 @@
 import { z } from "zod";
 
+const gender = ["masculino", "feminino"];
+
+const maritalStatus = [
+  "solteiro",
+  "casado",
+  "divorciado",
+  "viuvo",
+  "uniao_estavel",
+];
+
 const fieldErrors = {
   required: (field: string) => `${field} é obrigatório.`,
   min: (field: string, min: number) =>
@@ -27,9 +37,9 @@ export const FormSchema = z.object({
 
   email: z.email({ message: "Formato de email inválido." }),
 
-  gender: z.string().min(1, fieldErrors.required("Gênero")),
+  gender: z.enum(gender, { message: "Gênero inválido." }),
 
-  marital_status: z.string().min(1, fieldErrors.required("Estado Civil")),
+  marital_status: z.enum(maritalStatus, { message: "Estado civil inválido." }),
 
   birth_date: z.string().min(1, fieldErrors.required("Data de Nascimento")),
 

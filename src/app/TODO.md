@@ -1,2 +1,3 @@
 - Input component precisa de uma class para os errores
 - Field phone precisa de um patter
+- Manejo de errores frontend (Boom)

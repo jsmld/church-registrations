@@ -32,7 +32,7 @@ export const Select = ({
       <label htmlFor={id} className="block text-sm font-medium text-gray-700">
         {label}
       </label>
-      <select className="select text-md w-full" {...props}>
+      <select className="select text-md w-full" name={id} id={id} {...props}>
         <option disabled={true} selected value="" key="default">
           {`Selecione ${label.toLocaleLowerCase()}`}
         </option>

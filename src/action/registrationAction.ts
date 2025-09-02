@@ -15,6 +15,7 @@ export async function registrationAction(
   const formEntries = formData.entries().filter(([key]) => !key.includes("$"));
   const formJsonEntries = Object.fromEntries(formEntries) as FieldsValueState;
   const validatedFields = FormSchema.safeParse(formJsonEntries);
+  console.log(formJsonEntries);
 
   if (!validatedFields.success) {
     const treeErro = z.treeifyError(validatedFields.error);

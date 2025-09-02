@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useState, useEffect } from "react";
 import { registrationAction } from "../../action/registrationAction";
 import {
   RegistrationsFormState,
@@ -48,44 +48,62 @@ const maritalStatusOptions = [
 ];
 
 export default function Page() {
-  const [cityField, setCityField] = useState("");
-  const [stateField, setStateField] = useState("");
-  const [neighborhoodField, setNeighborhoodField] = useState("");
-  const [streetField, setStreetField] = useState("");
-  const [cepValidation, setCepValidation] = useState(false);
   const [stateForm, formAction, pending] = useActionState(
     registrationAction,
     initialFormState
   );
+  const [values, setValues] = useState<FieldsValueState>(initialFieldsState);
+  const [cepAddressFetched, setCepAddressFetched] = useState(false);
+
+  useEffect(() => {
+    // Sincroniza o estado local com o estado retornado pela action,
+    // útil para repopular o formulário após um erro de validação no servidor.
+    if (stateForm.values) {
+      setValues(stateForm.values);
+    }
+  }, [stateForm.values]);
 
   const handleCepChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const cep = e.target.value;
-    const cepValidation = cepFormSchema.safeParse(cep);
+    const cep = e.target.value.replace(/\D/g, "");
+    setValues((prev) => ({ ...prev, cep }));
 
-    if (cepValidation.success) {
+    if (cep.length !== 8) {
+      setCepAddressFetched(false);
+      return;
+    }
+
+    const cepValidationResult = cepFormSchema.safeParse(cep);
+
+    if (cepValidationResult.success) {
       try {
         const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
         const data = await response.json();
 
         if (!data.erro) {
-          setCityField(data.localidade);
-          setStateField(data.uf);
-          setNeighborhoodField(data.bairro);
-          setStreetField(data.logradouro);
-          setCepValidation(true);
+          setValues((prev) => ({
+            ...prev,
+            city: data.localidade,
+            state: data.uf,
+            neighborhood: data.bairro,
+            street: data.logradouro,
+          }));
+          setCepAddressFetched(true);
         } else {
           console.error("CEP não encontrado.");
-          setCityField("");
-          setStateField("");
-          setNeighborhoodField("");
-          setStreetField("");
-          setCepValidation(false);
+          setValues((prev) => ({
+            ...prev,
+            city: "",
+            state: "",
+            neighborhood: "",
+            street: "",
+          }));
+          setCepAddressFetched(false);
         }
       } catch (error) {
         console.error("Falha ao buscar CEP:", error);
       }
     } else {
-      console.log("error cep", cep);
+      setCepAddressFetched(false);
     }
   };
 
@@ -112,7 +130,10 @@ export default function Page() {
                 pattern="\d{3}\.?\d{3}\.?\d{3}-?\d{2}"
                 maxLength={14}
                 required
-                defaultValue={stateForm.values?.cpf}
+                value={values.cpf}
+                onChange={(e) =>
+                  setValues((prev) => ({ ...prev, cpf: e.target.value }))
+                }
                 error={stateForm.errors?.cpf}
               />
               <Input
@@ -124,7 +145,10 @@ export default function Page() {
                 required
                 minLength={3}
                 pattern="^[a-zA-Z]+$"
-                defaultValue={stateForm.values?.name}
+                value={values.name}
+                onChange={(e) =>
+                  setValues((prev) => ({ ...prev, name: e.target.value }))
+                }
                 error={stateForm.errors?.name}
                 messageVallidator="Nome deve ter no mínimo 3 caracteres"
               />
@@ -137,7 +161,10 @@ export default function Page() {
                 required
                 minLength={3}
                 pattern="^[a-zA-Z]+$"
-                defaultValue={stateForm.values?.last_name}
+                value={values.last_name}
+                onChange={(e) =>
+                  setValues((prev) => ({ ...prev, last_name: e.target.value }))
+                }
                 error={stateForm.errors?.last_name}
                 messageVallidator="Sobrenome deve ter no mínimo 3 caracteres"
               />
@@ -149,7 +176,10 @@ export default function Page() {
                 placeholder="email@example.com"
                 required
                 pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-                defaultValue={stateForm.values?.email}
+                value={values.email}
+                onChange={(e) =>
+                  setValues((prev) => ({ ...prev, email: e.target.value }))
+                }
                 error={stateForm.errors?.email}
               />
               <Select
@@ -157,7 +187,10 @@ export default function Page() {
                 label="Gênero"
                 options={genderOptions}
                 required
-                defaultValue={stateForm.values?.gender}
+                value={values.gender}
+                onChange={(e) =>
+                  setValues((prev) => ({ ...prev, gender: e.target.value }))
+                }
                 error={stateForm.errors?.gender}
               />
               <Select
@@ -165,7 +198,13 @@ export default function Page() {
                 label="Estado Civil"
                 options={maritalStatusOptions}
                 required
-                defaultValue={stateForm.values?.marital_status}
+                value={values.marital_status}
+                onChange={(e) =>
+                  setValues((prev) => ({
+                    ...prev,
+                    marital_status: e.target.value,
+                  }))
+                }
                 error={stateForm.errors?.marital_status}
               />
               <Input
@@ -173,7 +212,10 @@ export default function Page() {
                 label="Data de Nascimento"
                 type="date"
                 required
-                defaultValue={stateForm.values?.birth_date}
+                value={values.birth_date}
+                onChange={(e) =>
+                  setValues((prev) => ({ ...prev, birth_date: e.target.value }))
+                }
                 error={stateForm.errors?.birth_date}
               />
               <Input
@@ -184,7 +226,10 @@ export default function Page() {
                 placeholder="(XX) XXXXX-XXXX"
                 required
                 pattern="\(\d{2}\) \d{5}-\d{4}"
-                defaultValue={stateForm.values?.phone}
+                value={values.phone}
+                onChange={(e) =>
+                  setValues((prev) => ({ ...prev, phone: e.target.value }))
+                }
                 error={stateForm.errors?.phone}
               />
             </div>
@@ -202,10 +247,9 @@ export default function Page() {
                   pattern="\d{8}"
                   maxLength={8}
                   required
-                  defaultValue={stateForm.values?.cep}
+                  value={values.cep}
                   error={stateForm.errors?.cep}
                   onChange={handleCepChange}
-                  disabled={cepValidation}
                   wrapperClassName="lg:col-span-2"
                 />
                 <Input
@@ -214,9 +258,12 @@ export default function Page() {
                   type="text"
                   placeholder="Salvador"
                   required
-                  defaultValue={stateForm.values?.city || cityField}
+                  value={values.city}
+                  onChange={(e) =>
+                    setValues((prev) => ({ ...prev, city: e.target.value }))
+                  }
                   error={stateForm.errors?.city}
-                  disabled={cepValidation}
+                  readOnly={cepAddressFetched}
                 />
                 <Input
                   id="state"
@@ -224,9 +271,12 @@ export default function Page() {
                   type="text"
                   placeholder="BA"
                   required
-                  defaultValue={stateForm.values?.state || stateField}
+                  value={values.state}
+                  onChange={(e) =>
+                    setValues((prev) => ({ ...prev, state: e.target.value }))
+                  }
                   error={stateForm.errors?.state}
-                  disabled={cepValidation}
+                  readOnly={cepAddressFetched}
                 />
                 <Input
                   id="neighborhood"
@@ -234,11 +284,15 @@ export default function Page() {
                   type="text"
                   placeholder="Brotas"
                   required
-                  defaultValue={
-                    stateForm.values?.neighborhood || neighborhoodField
+                  value={values.neighborhood}
+                  onChange={(e) =>
+                    setValues((prev) => ({
+                      ...prev,
+                      neighborhood: e.target.value,
+                    }))
                   }
                   error={stateForm.errors?.neighborhood}
-                  disabled={cepValidation}
+                  readOnly={cepAddressFetched}
                   wrapperClassName="lg:col-span-2"
                 />
                 <Input
@@ -247,8 +301,12 @@ export default function Page() {
                   type="text"
                   placeholder="Dom Joao"
                   required
-                  defaultValue={stateForm.values?.street || streetField}
+                  value={values.street}
+                  onChange={(e) =>
+                    setValues((prev) => ({ ...prev, street: e.target.value }))
+                  }
                   error={stateForm.errors?.street}
+                  readOnly={cepAddressFetched}
                   wrapperClassName="lg:col-span-2"
                 />
                 <Input
@@ -257,7 +315,13 @@ export default function Page() {
                   type="text"
                   placeholder="10"
                   required
-                  defaultValue={stateForm.values?.street_number}
+                  value={values.street_number}
+                  onChange={(e) =>
+                    setValues((prev) => ({
+                      ...prev,
+                      street_number: e.target.value,
+                    }))
+                  }
                   error={stateForm.errors?.street_number}
                 />
                 <Input
@@ -265,7 +329,13 @@ export default function Page() {
                   label="Complemento"
                   type="text"
                   placeholder="Apto 101"
-                  defaultValue={stateForm.values?.complement}
+                  value={values.complement}
+                  onChange={(e) =>
+                    setValues((prev) => ({
+                      ...prev,
+                      complement: e.target.value,
+                    }))
+                  }
                   error={stateForm.errors?.complement}
                   wrapperClassName="lg:col-span-full"
                 />
